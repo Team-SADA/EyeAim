@@ -331,7 +331,7 @@ def show_ranking(name):
 
 def Calibration():
     pygame.mouse.set_visible(True)
-    COLOR_CHANGE = [(200,200,255), (150,150,255), (100,100,255)]
+    # COLOR_CHANGE = [(200,200,255), (150,150,255), (100,100,255)]
 
     pos = [[40, 40], [width / 2, 40], [width - 40, 40], [40, height / 2], [width / 2, height / 2],
            [width - 40, height / 2], [40, height - 40], [width / 2, height - 40], [width - 40, height - 40]]
@@ -357,17 +357,17 @@ def Calibration():
                             mouse_x,mouse_y = pygame.mouse.get_pos()
                             if (mouse_x-pos[i][0])**2+(mouse_y-pos[i][1])**2 <= 225:
                                 print(pos[i][0], pos[i][1])
-                                if click_n[i] <= 1:
-                                    click_n[i] += 1
-                                    clicked = pos[i]
-                                    colors[i] = COLOR_CHANGE[click_n[i]]
-                                else:
-                                    b = 1
+                                #if click_n[i] < 1:
+                                click_n[i] += 1
+                                clicked = pos[i]
+                                    #colors[i] = COLOR_CHANGE[click_n[i]]
+                                #else:
+                                b = 1
                     if b == 1:
                         break
 
             print(clicked if clicked != [] else '', end='')
-        if sum(click_n) == 18:
+        if sum(click_n) == 9:
             break
 
 
