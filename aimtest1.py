@@ -16,7 +16,11 @@ import cv2
 # Calibration 화면 만들기
 
 ko = {'Q':'ㅃ', 'W':'ㅉ', 'E':'ㄸ', 'R':'ㄲ', 'T':'ㅆ', 'Y':'ㅛ', 'U':'ㅕ', 'I':'ㅑ', 'O':'ㅒ', 'P':'ㅖ', 'A':'ㅁ', 'S':'ㄴ', 'D':'ㅇ', 'F':'ㄹ', 'G':'ㅎ', 'H':'ㅗ', 'J':'ㅓ', 'K':'ㅏ', 'L':'ㅣ', 'Z':'ㅋ', 'X':'ㅌ', 'C':'ㅊ', 'V':'ㅍ', 'B':'ㅠ', 'N':'ㅜ', 'M':'ㅡ',
+'rt':'ㄳ', 'sw':'ㄵ', 'sg':'ㄶ', 'fr':'ㄺ', 'fa':'ㄻ', 'fq':'ㄼ', 'ft':'ㄽ', 'fx':'ㄾ', 'fv':'ㄿ', 'fg':'ㅀ', 'qt':'ㅄ', 'k':'ㅏ', 'o':'ㅐ', 'i':'ㅑ', 'O':'ㅒ', 'j':'ㅓ', 'p':'ㅔ', 'u':'ㅕ', 'P':'ㅖ', 'h':'ㅗ', 'hk':'ㅘ', 'ho':'ㅙ', 'hl':'ㅚ',
+           'y':'ㅛ', 'n':'ㅜ', 'nj':'ㅝ', 'np':'ㅞ', 'nl':'ㅟ', 'b':'ㅠ',  'm':'ㅡ', 'ml':'ㅢ', 'l':'ㅣ',
       'q':'ㅂ', 'w':'ㅈ', 'e':'ㄷ', 'r':'ㄱ', 't':'ㅅ', 'y':'ㅛ', 'u':'ㅕ', 'i':'ㅑ', 'o':'ㅐ', 'p':'ㅔ', 'a':'ㅁ', 'd':'ㅇ', 'f':'ㄹ', 'g':'ㅎ', 'h':'ㅗ', 'j':'ㅓ', 'k':'ㅏ', 'l':'ㅣ', 'z':'ㅋ', 'x':'ㅌ', 'c':'ㅊ', 'v':'ㅍ', 'b':'ㅠ', 'n':'ㅜ', 'm':'ㅡ', 's':'ㄴ', }
+mo = {'k':'ㅏ', 'o':'ㅐ', 'i':'ㅑ', 'O':'ㅒ', 'j':'ㅓ', 'p':'ㅔ', 'u':'ㅕ', 'P':'ㅖ', 'h':'ㅗ', 'hk':'ㅘ', 'ho':'ㅙ', 'hl':'ㅚ',
+           'y':'ㅛ', 'n':'ㅜ', 'nj':'ㅝ', 'np':'ㅞ', 'nl':'ㅟ', 'b':'ㅠ',  'm':'ㅡ', 'ml':'ㅢ', 'l':'ㅣ',}
 def main():
     global score
     global recorded
@@ -149,8 +153,9 @@ def Leaderboard():
                     return
                 if width/2-Input.get_width()/2 <= mouse_x <= width/2+Input.get_width()/2 and 600 <= mouse_y <= 600 + Input.get_height() and over == 0:
                     name = ''
+                    previous = ''
                     while True:
-                        Input = kofont.render(hangul_utils.join_jamos(name), True, (255, 255, 255))
+                        Input = kofont.render(hangul_utils.join_jamos(jamos(name)), True, (255, 255, 255))
                         reset_Leaderboard()
                         out = 0
                         for ev2 in pygame.event.get():
@@ -162,10 +167,12 @@ def Leaderboard():
                                         record[score].append(name)
                                         out = 1
                                         recorded = 1
-                                        name = hangul_utils.join_jamos(name)
+
                                         if score >= 0:
                                             #requests.get(f"https://sada.ziho.kr/coin/add/{name.split('_')[0]}/{name.split('_')[1]}/100")
-                                            requests.request('GET', f"https://sada.ziho.kr/coin/add/{name.split('_')[0]}/{name.split('_')[1]}/100")
+                                            if len(hangul_utils.join_jamos(jamos(name)).split('_')) == 2:
+                                                requests.request('GET', f"https://sada.ziho.kr/coin/add/{hangul_utils.join_jamos(jamos(name)).split('_')[0]}/{hangul_utils.join_jamos(jamos(name)).split('_')[1]}/100")
+
                                     break
 
                                 elif ev2.key == pygame.K_BACKSPACE:
@@ -173,11 +180,14 @@ def Leaderboard():
                                         name = name[:-1]
                                         reset_Leaderboard()
                                 else:
+
                                     if len(name) <= 13:
+
                                         if ev2.unicode in ko.keys():
                                             name += ko[ev2.unicode]
                                         else:
                                             name += ev2.unicode
+                                        previous = ev2.unicode
                                     else:
                                         pygame.draw.rect(screen, bg_color, [width / 2 - Input.get_width() / 2, 500, Input.get_width(),Input.get_height()])
                                         Input = kofont.render("최대 글자수 : 13자", True, (255, 150, 150))
@@ -185,10 +195,10 @@ def Leaderboard():
                                         pygame.display.flip()
                                         time.sleep(1)
                                         name = name[:13]
-                                        Input = kofont.render(hangul_utils.join_jamos(name), True, (255, 255, 255))
+                                        Input = kofont.render(hangul_utils.join_jamos(jamos(name)), True, (255, 255, 255))
                                         reset_Leaderboard()
                                     break
-                        name_text = kofont.render(hangul_utils.join_jamos(name), True, (255, 255, 255))
+                        name_text = kofont.render(hangul_utils.join_jamos(jamos(name)), True, (255, 255, 255))
                         screen.blit(name_text, (width/2-name_text.get_width()/2, 600))
                         pygame.display.flip()
                         if out == 1:
@@ -199,7 +209,7 @@ def Leaderboard():
                 if width / 2 - Search_text.get_width() / 2 <= mouse_x <= width / 2 + Search_text.get_width() / 2 and 700 <= mouse_y <= 700 + Search_text.get_height():
                     init = ''
                     while True:
-                        Search_text = kofont.render(hangul_utils.join_jamos(init), True, (255, 255, 255))
+                        Search_text = kofont.render(hangul_utils.join_jamos(jamos(init)), True, (255, 255, 255))
                         reset_Leaderboard()
                         out = 0
                         for ev2 in pygame.event.get():
@@ -241,10 +251,10 @@ def Leaderboard():
                                         pygame.display.flip()
                                         time.sleep(1)
                                         init = init[:13]
-                                        Search_text = kofont.render(hangul_utils.join_jamos(init), True, (255, 255, 255))
+                                        Search_text = kofont.render(hangul_utils.join_jamos(jamos(init)), True, (255, 255, 255))
                                         reset_Leaderboard()
                                     break
-                        init_text = font.render(hangul_utils.join_jamos(init), True, (255, 255, 255))
+                        init_text = font.render(hangul_utils.join_jamos(jamos(init)), True, (255, 255, 255))
                         screen.blit(init_text, (width / 2 - init_text.get_width() / 2, 700))
                         pygame.display.flip()
                         if out == 1:
@@ -277,8 +287,8 @@ def reset_Leaderboard():
                 cnt += 1
                 if cnt > 5:
                     break
-                screen.blit(kofont.render(ranking[cnt-1] + hangul_utils.join_jamos(j) + f" : {i}", True, (255,255,255)),
-                            (width/2-kofont.render(ranking[cnt-1] + hangul_utils.join_jamos(j) + f" : {i}", True, (255,255,255)).get_width()/2, 110+50*(cnt-1)))
+                screen.blit(kofont.render(ranking[cnt-1] + hangul_utils.join_jamos(jamos(j)) + f" : {i}", True, (255,255,255)),
+                            (width/2-kofont.render(ranking[cnt-1] + hangul_utils.join_jamos(jamos(j)) + f" : {i}", True, (255,255,255)).get_width()/2, 110+50*(cnt-1)))
 
             if cnt > 5:
                 break
@@ -301,7 +311,7 @@ def show_ranking(name):
     back_text = font.render("뒤로", True, (255, 255, 255))
     Bigfont = pygame.font.SysFont("malgungothic", 48)
     screen.fill(bg_color)
-    screen.blit(Bigfont.render(f"{hangul_utils.join_jamos(name)}의 점수", True, (255, 255, 255)), (width/2-Bigfont.render(f"{hangul_utils.join_jamos(name)}'s Score", True, (255, 255, 255)).get_width()/2, 40))
+    screen.blit(Bigfont.render(f"{hangul_utils.join_jamos(jamos(name))}의 점수", True, (255, 255, 255)), (width/2-Bigfont.render(f"{hangul_utils.join_jamos(name)}'s Score", True, (255, 255, 255)).get_width()/2, 40))
     screen.blit(back_text, (width / 2 - back_text.get_width() / 2, 900))
     cnt = sum(i.count(name) for i in record)
     pages = (cnt-1)//15+1
@@ -384,6 +394,33 @@ def Circle_Check():
             return i
     return -1
 
+def jamos(name):
+    translated = ''
+    final = ''
+    mo_count = 0
+    previous_cons = 0
+    for i in range(len(name)):
+        if name[i] in mo.values():
+            if mo_count == 1:
+                translated += intwine(name[i-1], name[i])
+                mo_count = 0
+            else:
+                mo_count = 1
+                if i != len(name)-1:
+                    if previous_cons == 1 and name[i+1] not in mo.values():
+                        translated += name[i]
+        else:
+            mo_count = 0
+            translated += name[i]
+            previous_cons = 1
+
+    return translated
+
+def intwine(char1, char2):
+    if char1+char2 in char_dict.keys():
+        return char_dict[char1+char2]
+    else:
+        return char1+char2
 
 
 if __name__ == "__main__":
@@ -415,9 +452,10 @@ if __name__ == "__main__":
     record = list([] for i in range(200))
     over = 0
     threshold = 10000
+    char_dict = {"ㅗㅏ": "ㅘ", "ㅜㅣ": "ㅟ", "ㅗㅣ": "ㅚ", "ㅗㅐ": "ㅙ", "ㅜㅔ": "ㅞ", 'ㅡㅣ': 'ㅢ', 'ㅜㅓ': 'ㅝ'}
 
     while True:
-        total_time = 20
+        total_time = 0
         main()
         pygame.mouse.set_visible(True)
         show_finished_screen()
